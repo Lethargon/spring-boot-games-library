@@ -11,13 +11,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: checkout code
+      - name: Step 1. Checkout code
         uses: actions/checkout@v6
-      - name: setup java
+
+      - name: Step 2. Setup java JDK
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '21'
           cache: 'maven'
-      - name: build and test
-        run: mvn -B clean verify
+
+      - name: Step 3. Build, verify, and copy .jar
+        run: |
+          mvn -B clean verify
+          mkdir staging && cp target/*.jar staging
+
+      - name: Step 4. Persist copied data as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: github-actions-artifact
+          path: staging
