@@ -49,6 +49,8 @@ public class GameIntegrationTest {
     @Autowired
     PublisherRepository publisherRepository;
 
+    Long createdGameId;
+
     @BeforeEach
     void setup(){
         developerRepository.deleteAll();
@@ -64,7 +66,7 @@ public class GameIntegrationTest {
         Publisher pub3 = new Publisher("Epic Games Publishing");
         pub3 = publisherRepository.save(pub3);
         Game game1 = new Game("Max Payne", dev, pub1);
-        repository.save(game1);
+        createdGameId = repository.save(game1).getId();
         Game game2 = new Game("Alan Wake", dev, pub2);
         repository.save(game2);
         Game game3 = new Game("Alan Wake 2", dev, pub3);
@@ -75,7 +77,7 @@ public class GameIntegrationTest {
     @DisplayName("getById should return status 200")
     void getByIdSuccessfulRetrieval() throws Exception{
 
-        mockMvc.perform(get("/games/1"))
+        mockMvc.perform(get("/games/" + createdGameId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("Max Payne"));
     }
